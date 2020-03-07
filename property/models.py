@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 
 class Flat(models.Model):
@@ -23,6 +24,16 @@ class Flat(models.Model):
     construction_year = models.IntegerField("Год постройки здания", null=True, blank=True, db_index=True)
 
     new_building = models.NullBooleanField()
+    likes = models.ManyToManyField(User)
 
     def __str__(self):
         return f"{self.town}, {self.address} ({self.price}р.)"
+
+
+class Complaint(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='complaints', verbose_name='Пользователь')
+    flat = models.ForeignKey(Flat, on_delete=models.CASCADE, related_name='complaints', verbose_name='Квартира')
+    text_complaint = models.TextField(verbose_name='Текст жалобы')
+
+    def __str__(self):
+        return f"{self.user}, {self.flat.address}, {self.text_complaint[:50]}"
