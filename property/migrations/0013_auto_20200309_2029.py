@@ -9,7 +9,11 @@ def migrate_owner(apps, schema_editor):
 
     for flat in Flat.objects.all():
         if not Owner.objects.filter(owners_phonenumber=flat.owners_phonenumber).exists():
-            Owner.objects.create(name=flat.owner, owners_phonenumber=flat.owners_phonenumber, owner_phone_pure=flat.owner_phone_pure)
+            Owner.objects.get_or_create(
+                name=flat.owner,
+                owners_phonenumber=flat.owners_phonenumber,
+                owner_phone_pure=flat.owner_phone_pure
+            )
 
 
 class Migration(migrations.Migration):
